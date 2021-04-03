@@ -37,7 +37,7 @@ def nudity_blur(img, cfg_file, weight_file, name_file):
 	with open(name_file, 'r') as f:
 		classes=[line.strip() for line in f.readlines()]
     # give configuration and weight file
-	net = cv2.dnn.readNetFromDarknet(cfg_file, weight_file) 
+	net = cv2.dnn.readNet(cfg_file, weight_file) 
 	height, width, channels = img.shape
     # convert image to blob
 	blob = cv2.dnn.blobFromImage(img, 1/255, (416,416), (0,0,0),swapRB=True, crop=False )
