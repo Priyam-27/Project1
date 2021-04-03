@@ -12,7 +12,7 @@ from nudenet import NudeDetector as ND
 eye_classifier = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_eye.xml')
 smile_classifier = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_smile.xml')
 
-detector = ND()
+
 # pytesseract.pytesseract.tesseract_cmd =r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 # poppler_path=r'C:\\poppler\\poppler-21.03.0\\Library\\bin'
 
@@ -38,6 +38,7 @@ def get_image_download_link(img):
 
 @st.cache
 def blur_nudity(img):
+	detector = ND()
 	for i in detector.detect(img):
 		if i['label'] in classes:
 			x,y,w,h = i['box']
