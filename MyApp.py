@@ -7,16 +7,22 @@ import numpy as np
 from PIL import Image
 import streamlit as st
 import tempfile
+from nudenet import NudeDetector as ND
 
 eye_classifier = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_eye.xml')
 smile_classifier = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_smile.xml')
 
+detector = ND()
 # pytesseract.pytesseract.tesseract_cmd =r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 # poppler_path=r'C:\\poppler\\poppler-21.03.0\\Library\\bin'
 
 cfg_file_path='yolov3_last_training.cfg'
 weights_file_path='yolov3_training_last.weights'
 names_file_path = 'names.names'
+
+classes = ['EXPOSED_ANUS', 'EXPOSED_BUTTOCKS', 'COVERED_BREAST_F', 'EXPOSED_BREAST_F',
+           'EXPOSED_GENITALIA_F', 'EXPOSED_GENITALIA_M', 'EXPOSED_BUTTOCKS', 'EXPOSED_BREAST_F', 'EXPOSED_GENITALIA_F',
+           'EXPOSED_GENITALIA_M']
 
 @st.cache
 def get_image_download_link(img):
@@ -29,6 +35,15 @@ def get_image_download_link(img):
 	img_str = base64.b64encode(buffered.getvalue()).decode()
 	href = f'<a href="data:file/jpg;base64,{img_str}">Download result</a>'
 	return href
+
+@st.cache
+def blur_nudity(img):
+	for i in detector.detect(img):
+		if i['label'] in classes:
+			x,y,w,h = i['box']
+			Img = cv2.medianBlur(img[y:h, x:w], ksize=41)
+			img[y:h, x:w] = Img
+	return img
 
 @st.cache
 def nudity_blur(img, cfg_file, weight_file, name_file):
@@ -264,7 +279,7 @@ def main():
 							# if frame == None:
 							# 	pass
 							frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-							image,label, conf =nudity_blur(frame, cfg_file_path, weights_file_path, names_file_path)
+							image =blur_nudity(frame)
 							stframe.image(image)
 							if len(label) == 0:
 								st.info('No Nudity present in the video')
@@ -323,15 +338,11 @@ def main():
 							st.info('No Smile Detected')
 						# st.info(blur_smile(image))
 					elif choice_type == 'Nudity':
-						result_image, label, confidence= nudity_blur(image, cfg_file_path, weights_file_path, names_file_path)
+						result_image= blur_nudity(image)
 						st.image(result_image, use_column_width=True)
 						pil_img = Image.fromarray(result_image)
 						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
-						if len(confidence) ==0:
-							st.info('No nudity present in the image.')
-						else:
-							x=round(np.mean([float(i) for i in confidence])*100,2)
-							st.info(f'Nudity percentage: {x}%')
+						
 
 				# 		elif choice_type == 'Text':
 
