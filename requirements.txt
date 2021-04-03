@@ -1,4 +1,4 @@
-opencv_python_headless==4.5.1.48
+opencv-python-headless==4.5.1.48
 cvlib==0.2.4
 numpy==1.19.5
 streamlit==0.79.0
