@@ -16,9 +16,9 @@ detector = ND()
 # pytesseract.pytesseract.tesseract_cmd =r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 # poppler_path=r'C:\\poppler\\poppler-21.03.0\\Library\\bin'
 
-cfg_file_path='yolov3_last_training.cfg'
-weights_file_path='yolov3_training_last.weights'
-names_file_path = 'names.names'
+# cfg_file_path='yolov3_last_training.cfg'
+# weights_file_path='yolov3_training_last.weights'
+# names_file_path = 'names.names'
 
 classes = ['EXPOSED_ANUS', 'EXPOSED_BUTTOCKS', 'COVERED_BREAST_F', 'EXPOSED_BREAST_F',
            'EXPOSED_GENITALIA_F', 'EXPOSED_GENITALIA_M', 'EXPOSED_BUTTOCKS', 'EXPOSED_BREAST_F', 'EXPOSED_GENITALIA_F',
@@ -41,68 +41,68 @@ def blur_nudity(img):
 	for i in detector.detect(img):
 		if i['label'] in classes:
 			x,y,w,h = i['box']
-			Img = cv2.medianBlur(img[y:h, x:w], ksize=41)
+			Img = cv2.medianBlur(img[y:h, x:w], ksize=101)
 			img[y:h, x:w] = Img
 	return img
 
 @st.cache
-def nudity_blur(img, cfg_file, weight_file, name_file):
-	'''returns the censored image, label for the part and confidence for that part'''
-	classes=[]
-	with open(name_file, 'r') as f:
-		classes=[line.strip() for line in f.readlines()]
-    # give configuration and weight file
-	net = cv2.dnn.readNet(cfg_file, weight_file) 
-	height, width, channels = img.shape
-    # convert image to blob
-	blob = cv2.dnn.blobFromImage(img, 1/255, (416,416), (0,0,0),swapRB=True, crop=False )
-    # feeding blob input to yolo input
-	net.setInput(blob)
-    # getting last layer
-	last_layer = net.getUnconnectedOutLayersNames()
-    # getting output from this layer
-	last_out = net.forward(last_layer)
+# def nudity_blur(img, cfg_file, weight_file, name_file):
+# 	'''returns the censored image, label for the part and confidence for that part'''
+# 	classes=[]
+# 	with open(name_file, 'r') as f:
+# 		classes=[line.strip() for line in f.readlines()]
+#     # give configuration and weight file
+# 	net = cv2.dnn.readNet(cfg_file, weight_file) 
+# 	height, width, channels = img.shape
+#     # convert image to blob
+# 	blob = cv2.dnn.blobFromImage(img, 1/255, (416,416), (0,0,0),swapRB=True, crop=False )
+#     # feeding blob input to yolo input
+# 	net.setInput(blob)
+#     # getting last layer
+# 	last_layer = net.getUnconnectedOutLayersNames()
+#     # getting output from this layer
+# 	last_out = net.forward(last_layer)
     
-	boxes=[]         # for storing coordinates of rectangle
-	confidences=[]   # for storing probabilities
-	class_ids=[]     # for storing the label index
+# 	boxes=[]         # for storing coordinates of rectangle
+# 	confidences=[]   # for storing probabilities
+# 	class_ids=[]     # for storing the label index
     
     
-	for output in last_out:
-		for detection in output:
-			score = detection[4:]                 # probabilities are after 5th element first 4 are cooordinates
-			class_id = np.argmax(score)           # gives index of highest probability
-			confidence = score[class_id]          # gives the highest probability
-			if confidence > 0.05:                  # if the probability of happening is above 20%
-				center_x = int(detection[0] * width)
-				center_y = int(detection[1] * height)
-				w = int(detection[2] * width)
-				h = int(detection[3] * height)
+# 	for output in last_out:
+# 		for detection in output:
+# 			score = detection[4:]                 # probabilities are after 5th element first 4 are cooordinates
+# 			class_id = np.argmax(score)           # gives index of highest probability
+# 			confidence = score[class_id]          # gives the highest probability
+# 			if confidence > 0.05:                  # if the probability of happening is above 20%
+# 				center_x = int(detection[0] * width)
+# 				center_y = int(detection[1] * height)
+# 				w = int(detection[2] * width)
+# 				h = int(detection[3] * height)
 
-				x = int(center_x - w/2)
-				y = int(center_y - h/2)
+# 				x = int(center_x - w/2)
+# 				y = int(center_y - h/2)
 
-				boxes.append([x,y,w,h])
-				confidences.append((float(confidence)))
-				class_ids.append(class_id)
+# 				boxes.append([x,y,w,h])
+# 				confidences.append((float(confidence)))
+# 				class_ids.append(class_id)
                 
-	labels=[]
-	conf=[]
-	indices= np.array(cv2.dnn.NMSBoxes(boxes, confidences, 0.05,0.4))
-#     indices = np.array(index)
-	for i in indices.flatten():
-		x,y,w,h = boxes[i]                              # returns coordinates
-		label = str(classes[class_ids[i]])              # returns label for each image
-		confidence = str(round(confidences[i],2))       # returns confidence for each label
-        # make blur
+# 	labels=[]
+# 	conf=[]
+# 	indices= np.array(cv2.dnn.NMSBoxes(boxes, confidences, 0.05,0.4))
+# #     indices = np.array(index)
+# 	for i in indices.flatten():
+# 		x,y,w,h = boxes[i]                              # returns coordinates
+# 		label = str(classes[class_ids[i]])              # returns label for each image
+# 		confidence = str(round(confidences[i],2))       # returns confidence for each label
+#         # make blur
       
-        #roi = img[y:y+h, x:x+w]
-		img[y:y+h, x:x+w]=cv2.medianBlur(img[y:y+h, x:x+w], ksize=201)
-		labels.append(label)
-		conf.append(confidence)
+#         #roi = img[y:y+h, x:x+w]
+# 		img[y:y+h, x:x+w]=cv2.medianBlur(img[y:y+h, x:x+w], ksize=201)
+# 		labels.append(label)
+# 		conf.append(confidence)
     
     
-	return(img, labels, conf)
+# 	return(img, labels, conf)
 
 
 @st.cache
