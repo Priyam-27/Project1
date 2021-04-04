@@ -24,7 +24,7 @@ classes = ['EXPOSED_ANUS', 'EXPOSED_BUTTOCKS', 'COVERED_BREAST_F', 'EXPOSED_BREA
            'EXPOSED_GENITALIA_F', 'EXPOSED_GENITALIA_M', 'EXPOSED_BUTTOCKS', 'EXPOSED_BREAST_F', 'EXPOSED_GENITALIA_F',
            'EXPOSED_GENITALIA_M']
 
-@st.cache
+
 def get_image_download_link(img):
 	"""Generates a link allowing the PIL image to be downloaded
 	in:  PIL image
@@ -36,7 +36,7 @@ def get_image_download_link(img):
 	href = f'<a href="data:file/jpg;base64,{img_str}">Download result</a>'
 	return href
 
-@st.cache
+
 def blur_nudity(img):
 	detector = ND()
 	for i in detector.detect(img):
@@ -46,7 +46,6 @@ def blur_nudity(img):
 			img[y:h, x:w] = Img
 	return img
 
-@st.cache
 # def nudity_blur(img, cfg_file, weight_file, name_file):
 # 	'''returns the censored image, label for the part and confidence for that part'''
 # 	classes=[]
@@ -115,7 +114,7 @@ def face_blur(img):
 		img[y:h, x:w] = cv2.medianBlur(roi, ksize=151)
 	return img
 
-@st.cache
+
 def blur_eyes(img):
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	eyes=eye_classifier.detectMultiScale(gray, 1.3,5)
@@ -128,7 +127,6 @@ def blur_eyes(img):
 			img[y:y+h, x:x+w] = cv2.medianBlur(roi, ksize=151)
 	return img
 
-@st.cache
 def blur_eyes_video(img):
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	eyes=eye_classifier.detectMultiScale(gray, 1.6,5)
@@ -141,7 +139,7 @@ def blur_eyes_video(img):
 			img[y:y+h, x:x+w] = cv2.medianBlur(roi, ksize=151)
 	return img
 
-@st.cache
+
 def blur_smile(img):
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	smile=smile_classifier.detectMultiScale(gray, 1.6,8)
@@ -154,7 +152,7 @@ def blur_smile(img):
 			img[y:y+h, x:x+w] = cv2.medianBlur(roi, ksize=151)
 	return img
 
-@st.cache
+
 def blur_smile_video(img):
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	smile=smile_classifier.detectMultiScale(gray, 1.5,10)
