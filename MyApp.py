@@ -306,7 +306,7 @@ def main():
 						st.image(result_image, use_column_width=True)
 						st.info(f'{choice_type} image returned')
 						pil_img = Image.fromarray(result_image)
-						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
+# 						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
 
 						
 					elif choice_type == 'Eyes':
@@ -314,7 +314,7 @@ def main():
 						st.image(result_image, use_column_width=True)
 # 						st.info(f'{choice_type} of the image got blurred')
 						pil_img = Image.fromarray(result_image)
-						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
+# 						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
 # 						if blur_eyes(image) == 'No Eyes Detected':
 # 							st.info('No Eyes Detected')
 						# st.info(blur_eyes(image))	
@@ -323,7 +323,7 @@ def main():
 						st.image(result_image, use_column_width=True)
 # 						st.info(f'{choice_type} of the image got blurred')
 						pil_img = Image.fromarray(result_image)
-						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
+# 						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
 # 						if face_blur(image) == 'No Face Detected':
 # 							st.info('No Face Detected')
 						# st.info(blur_face(image))
@@ -332,7 +332,7 @@ def main():
 						st.image(result_image, use_column_width=True)
 # 						st.info(f'{choice_type} of the image got blurred')
 						pil_img = Image.fromarray(result_image)
-						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
+# 						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
 # 						if blur_smile(image) == 'No Smile Detected':
 # 							st.info('No Smile Detected')
 						# st.info(blur_smile(image))
@@ -340,7 +340,7 @@ def main():
 						result_image= blur_nudity(image)
 						st.image(result_image, use_column_width=True)
 						pil_img = Image.fromarray(result_image)
-						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
+# 						st.markdown(get_image_download_link(pil_img), unsafe_allow_html=True)
 						
 
 				# 		elif choice_type == 'Text':
